@@ -1,17 +1,23 @@
 const express = require('express')
 const app = express()
 
-// app.use('/',(req,res)=>{
-//     res.send(' how are you?')
-// })
-app.use('/hello',(req,res)=>{
-    res.send('heleleleleeeleel')
+
+app.get('/user',(req,res)=>{
+    res.send({firstName : "Virendra", lastName : "Sirture"})
 })
-app.get('/home',(req,res)=>{
-    res.send('this is home page')
+
+app.post("/user",(req,res)=>{
+    res.send('data created succesfully')
 })
+app.delete('/user',(req,res)=>{
+    res.send('data deleted');
+})
+app.put("/user",(req,res)=>{
+    res.send('data has put');
+})
+
 app.use('/test',(req,res)=>{
-    res.send('this is test')
+    res.send('text')
 })
 app.listen(3000,(req,res)=>{
     console.log('server is started');
