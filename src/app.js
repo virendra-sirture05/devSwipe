@@ -1,21 +1,30 @@
 const express = require("express");
 const app = express();
+const connectDb = require('./config/database')
+const User = require('./models/user')
 
-app.get('/user',(req,res)=>{
-    try {
-        throw new Error('12345y');
-        res.send('user data sent')
-    } catch (error) {
-        res.status(500).send('Some error occured')
+app.post('/signup',async(req,res)=>{
+    const userObj = {
+        firstName : "salman",
+        lastName : "khan",
+        email : "v@gmail.com",
+        password : '1234'
     }
+
+    const user = new User(userObj);
+    await user.save();
+    res.send('user added successfully!')
+
 })
 
-app.use('/',(err,req,res,next)=>{
-    if(err){
-        res.status(500).send('something went wrong')
-    }
+connectDb().then(()=>{
+    console.log('database connnected successfully');
+    app.listen(3000, (req, res) => {
+        console.log("server is started");
+    });
+})
+.catch((err)=>{
+    console.error('errororororo');
 })
 
-app.listen(3000, (req, res) => {
-  console.log("server is started");
-});
+
