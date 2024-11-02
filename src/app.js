@@ -3,27 +3,50 @@ const app = express();
 const connectDb = require("./config/database");
 const User = require("./models/user");
 app.use(express.json());
-app.post("/signup", async (req, res) => {
-  //   console.log(req.body);
-  // creating a new instance of the user model
-  //   const userObj = {
-  //     firstName: "salman",
-  //     lastName: "khan",
-  //     email: "v@gmail.com",
-  //     password: "1234",
-  //   };
 
-  const userObj = req.body;
-
-  const user = new User(userObj);
-
+app.get('/userById',async(req,res)=>{
+  const userId = req.body.Id
   try {
-    await user.save();
-    res.send("user added successfully!");
-  } catch {
-    res.status(500).send("something went wrong");
+    const user = await User.find({_id :userId});
+    res.send(user);
+  } catch (error) {
+    res.status(400).send('something went wrong')
   }
-});
+})
+
+app.get('/userFirst',async (req,res)=>{
+  const userEmail = req.body.email;
+  try {
+    const user = await User.findOne({email : userEmail})
+    res.send(user);
+  } catch (error) {
+    res.status(400).send("something went wrong")
+  }
+})
+
+app.get('/user', async (req,res)=>{
+  const userEmail = req.body.email;
+  try {
+    const user = await User.find({email : userEmail});
+    if(user.length == 0){
+      res.status(404).send('user not found')
+    }
+    else
+    res.send(user);
+  } catch (error) {
+    res.status(400).send('something went wrong')
+  }
+})
+
+app.get('/feed', async (req,res)=>{
+  try {
+    const users = await User.find({})
+  res.send(users);
+  } catch (error) {
+    res.status(400).send("something went wrong")
+  }
+  
+})
 
 connectDb()
   .then(() => {
@@ -32,6 +55,7 @@ connectDb()
       console.log("server is started");
     });
   })
+
   .catch((err) => {
     console.error("errororororo");
   });
