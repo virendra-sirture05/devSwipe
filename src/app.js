@@ -2,51 +2,108 @@ const express = require("express");
 const app = express();
 const connectDb = require("./config/database");
 const User = require("./models/user");
+const { validateSignupData } = require("./utils/validation");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middleware/auth");
+const getJWT = require("./models/user");
+const cors = require("cors")
+
+require('dotenv').config()
+
+app.use(cors({
+  origin : 'http://localhost:5173',
+  credentials : true
+}))
+
 app.use(express.json());
+app.use(cookieParser());
 
-app.delete('/delete',async(req,res)=>{
-  const userid = req.body.id;
-  try {
-    const user = await User.findByIdAndDelete({_id : userid})
-    res.send('user deleted successfully')
-  } catch (error) {
-    res.status(400).send('something went wrong')
-  }
-})
+const authRouter = require('./routes/auth')
+const profileRouter = require('./routes/profile');
+const requestRouter = require('./routes/request');
+const userRouter = require("./routes/user");
 
-app.patch('/user',async (req,res)=>{
-  const userId = req.body.id;
-  const data = req.body;
-  try {
-    const user = await User.findByIdAndUpdate({_id: userId},data,{
-      returnDocument:'after'
-    })
-    console.log(user);
-    res.send('user updated successfully');
-  } catch (error) {
-    res.status(400).send('something went wrong')
-  }
-})
+app.use('/',authRouter);
+app.use('/',profileRouter);
+app.use('/',requestRouter); 
+app.use('/',(userRouter));
 
-app.put('/userP',async(req,res)=>{
-  const userEmail = req.body.email;
-  const data = req.body;
-  try {
-    const user = await User.findOneAndUpdate({email : userEmail},data)
-    res.send('updated')
-  } catch (error) {
-    res.status(400).send('something went wrong')
-  }
-})
 
-connectDb() 
+connectDb()
   .then(() => {
     console.log("database connnected successfully");
-    app.listen(3000, (req, res) => {
+    app.listen(process.env.port, (req, res) => {
       console.log("server is started");
     });
   })
 
   .catch((err) => {
-    console.error("errororororo");
+    console.error("error while connecting db");
   });
+
+
+
+
+
+  
+
+  // get user by email
+  //app.get("/user", async (req, res) => {
+    //   const userEmail = req.body.email;
+    //   try {
+    //     console.log(userEmail);
+    //     const user = await User.findOne({ email: userEmail });
+    //     if (!user) {
+    //       res.send("user not found");
+    //     } else {
+    //       res.send(user);
+    //     }
+    //   } catch (error) {
+    //     res.send("error " + error.message);
+    //   }
+    // });
+    
+    // // feed api
+    // app.get("/feed", async (req, res) => {
+    //   try {
+    //     const users = await User.find();
+    //     res.send(users);
+    //   } catch (error) {
+    //     res.send("error " + error.message);
+    //   }
+    // });
+    
+    // // delete user
+    // app.delete("/delete", async (req, res) => {
+    //   const userId = req.body.id;
+    //   try {
+    //     const user = await User.findByIdAndDelete({ _id: userId });
+    //     res.send("user deleted successfully");
+    //   } catch (error) {
+    //     res.send("Error" + error.message);
+    //   }
+    // });
+    
+    // // update user
+    // app.patch("/user", async (req, res) => {
+    //   const userId = req.body.id;
+    //   const data = req.body;
+    //   try {
+    //     const Allowed_update = ["photUrl", "about", "gender", "age", "skills"];
+    //     const isUpdateAllow = Object.keys(data).every((k) => {
+    //       Allowed_update.includes(k);
+    //     });
+    //     if (!isUpdateAllow) {
+    //       throw new Error("update not allowed");
+    //     }
+    //     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+    //       returnDocument: "after",
+    //       runValidators: true,
+    //     });
+    //     res.send("updated successfully");
+    //   } catch (err) {
+    //     res.status(400).send("Error " + err.message);
+    //   }
+    // });
