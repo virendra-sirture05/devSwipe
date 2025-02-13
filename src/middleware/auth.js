@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const userAuth = async (req, res, next) => {
   try {
+    
     const cookies = req.cookies;
     const { token } = cookies;
     if (!token) {
@@ -10,17 +11,21 @@ const userAuth = async (req, res, next) => {
     }
 
     const decodeObj = await jwt.verify(token, process.env.JWT_SECRET);
+    
     const { _id } = decodeObj;
-    ;
+    
+    
     const user = await User.findById(_id);
+    
     if (!user) {
+      console.log('12');
       throw new Error("user does not exist");
     }
-    
+    console.log('2');
     req.user = user;
     next();
   } catch (error) {
-    res.status(400).send("Error::" + error.message);
+    res.status(200).send("Error:" + error.message);
   }
 };
 

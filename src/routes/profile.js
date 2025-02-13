@@ -5,6 +5,7 @@ const profileRouter = express.Router();
 
 profileRouter.get('/profile/view', userAuth, async(req,res)=>{
     try {
+        console.log('1');
         const user = req.user;
         res.send(user);
     } catch (error) {
