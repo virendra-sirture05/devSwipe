@@ -68,7 +68,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuth, async (req,res
 
         const allowedStatus = ["accepted", "rejected"];
         if(!allowedStatus.includes(status)){
-            res.status(400).json({message : "status not allowed!"});
+            return res.status(400).json({message : "status not allowed!"});
         }
         
         const connectionRequest = await ConnectionRequestModel.findOne({
@@ -77,14 +77,14 @@ requestRouter.post("/request/review/:status/:requestId",userAuth, async (req,res
             status : "interested"
         })
         if(!connectionRequest){
-            res.status(400).json({message : "connection request not found"});
+            return res.status(400).json({message : "connection request not found"});
         }
         
         connectionRequest.status = status;
         
         const data = await connectionRequest.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             message : "connection request "+ status,
             data
         })

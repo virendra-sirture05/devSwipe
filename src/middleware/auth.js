@@ -6,15 +6,17 @@ const userAuth = async (req, res, next) => {
     const { token } = cookies;
     if (!token) {
       // throw new Error("Invalid token!!!!!!!!!!!1");
-      res.status(401).send('please login');
+      return res.status(401).send('please login');
     }
 
     const decodeObj = await jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decodeObj;
+    ;
     const user = await User.findById(_id);
     if (!user) {
       throw new Error("user does not exist");
     }
+    
     req.user = user;
     next();
   } catch (error) {
