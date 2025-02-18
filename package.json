@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.0",
     "mongoose": "^8.7.3",
+    "razorpay": "^2.9.5",
     "validator": "^13.12.0"
   }
 }

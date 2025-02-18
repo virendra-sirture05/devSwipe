@@ -18,10 +18,8 @@ const userAuth = async (req, res, next) => {
     const user = await User.findById(_id);
     
     if (!user) {
-      console.log('12');
       throw new Error("user does not exist");
     }
-    console.log('2');
     req.user = user;
     next();
   } catch (error) {
