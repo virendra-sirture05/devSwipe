@@ -1,4 +1,4 @@
-const RazorPay = require('razorpay');
+const RazorPay = require('razorpay')
 
 var instance = new RazorPay({
     key_id: process.env.RAZORPAY_KEY_ID ,
