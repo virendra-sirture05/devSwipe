@@ -11,7 +11,7 @@ const getJWT = require("./models/user");
 const cors = require("cors")
 
 require('dotenv').config()
-
+app.use("/payment/webhook", express.raw({ type: "application/json" }));
 app.use(cors({
   origin: 'http://localhost:5173',  // Frontend URL
   credentials: true,  // Allow cookies/credentials
